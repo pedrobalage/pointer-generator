@@ -20,7 +20,7 @@ import os
 import time
 import numpy as np
 import tensorflow as tf
-from attention_decoder import attention_decoder
+from .attention_decoder import attention_decoder
 from tensorflow.contrib.tensorboard.plugins import projector
 
 FLAGS = tf.app.flags.FLAGS
@@ -374,7 +374,7 @@ class SummarizationModel(object):
             self._hps.lr, initial_accumulator_value=self._hps.adagrad_init_acc)
         with tf.device("/gpu:0"):
             self._train_op = optimizer.apply_gradients(
-                zip(grads, tvars), global_step=self.global_step, name='train_step')
+                list(zip(grads, tvars)), global_step=self.global_step, name='train_step')
 
     def build_graph(self):
         """Add the placeholders, model, global step, train_op and summaries to the graph"""
@@ -498,7 +498,7 @@ class SummarizationModel(object):
         # Convert results['states'] (a single LSTMStateTuple) into a list of
         # LSTMStateTuple -- one for each hypothesis
         new_states = [tf.contrib.rnn.LSTMStateTuple(results['states'].c[i, :], results[
-                                                    'states'].h[i, :]) for i in xrange(beam_size)]
+                                                    'states'].h[i, :]) for i in range(beam_size)]
 
         # Convert singleton list containing a tensor to a list of k arrays
         assert len(results['attn_dists']) == 1
@@ -509,7 +509,7 @@ class SummarizationModel(object):
             assert len(results['p_gens']) == 1
             p_gens = results['p_gens'][0].tolist()
         else:
-            p_gens = [None for _ in xrange(beam_size)]
+            p_gens = [None for _ in range(beam_size)]
 
         # Convert the coverage tensor to a list length k containing the
         # coverage vector for each hypothesis
@@ -517,7 +517,7 @@ class SummarizationModel(object):
             new_coverage = results['coverage'].tolist()
             assert len(new_coverage) == beam_size
         else:
-            new_coverage = [None for _ in xrange(beam_size)]
+            new_coverage = [None for _ in range(beam_size)]
 
         return results['ids'], results['probs'], new_states, attn_dists, p_gens, new_coverage
 
