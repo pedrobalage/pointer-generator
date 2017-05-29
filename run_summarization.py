@@ -30,6 +30,9 @@ from model import SummarizationModel
 from decode import BeamSearchDecoder
 import util
 
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 FLAGS = tf.app.flags.FLAGS
 
 # Where to find data
@@ -141,7 +144,7 @@ def setup_training(model, batcher):
     if not os.path.exists(train_dir):
         os.makedirs(train_dir)
 
-    default_device = tf.device('/cpu:0')
+    default_device = tf.device('/gpu:0')
     with default_device:
         model.build_graph()  # build the graph
         if FLAGS.convert_to_coverage_model:
