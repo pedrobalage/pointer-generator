@@ -217,8 +217,6 @@ class SummarizationModel(object):
             final_dists = [vocab_dist + copy_dist for (vocab_dist, copy_dist) in zip(
                 vocab_dists_extended, attn_dists_projected)]
 
-            return final_dists
-
             # Issue #4: suggestion from user: 'rahul-iisc'
             # OOV part of vocab is max_art_oov long. Not all the sequences in a batch will have max_art_oov tokens.
             # That will cause some entries to be 0 in the distribution, which will result in NaN when calulating log_dists
